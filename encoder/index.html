@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashcam Encoder</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Dashcam Encoder</h1>
+
+        <p class="subtitle">
+            Driver-side video fingerprint transmission system
+        </p>
+
+        <div class="card">
+
+            <label for="driverId">Driver ID</label>
+
+            <input
+                type="text"
+                id="driverId"
+                placeholder="Enter Driver ID"
+            >
+
+            <div class="camera-container">
+
+    <video
+        id="cameraPreview"
+        autoplay
+        playsinline
+        muted>
+    </video>
+
+</div>
+
+<!-- Hidden canvas used to capture individual frames -->
+<canvas id="frameCanvas"></canvas>
+
+<div class="stats">
+    <div class="network-test">
+
+    
+
+</div>
+
+    <p>
+        Frames captured:
+        <span id="frameCount">0</span>
+    </p>
+
+    <p>
+        Hashes generated:
+        <span id="hashCount">0</span>
+    </p>
+
+    <p>Uploaded this session: <span id="uploadedCount">0</span></p>
+    <p>Recovered from queue: <span id="recoveredCount">0</span></p>
+
+    <p>
+        Pending uploads:
+        <span id="pendingCount">0</span>
+    </p>
+
+    <p>
+        Data retention:
+        <span id="retentionPeriod">24 hours</span>
+    </p>
+
+    <p>
+        Network:
+        <span id="networkStatus">Checking...</span>
+    </p>
+
+    <p>
+        Cloud:
+        <span id="cloudStatus">Checking...</span>
+    </p>
+
+    <p>
+        Last fingerprint:
+        <span id="lastHash">None</span>
+    </p>
+
+    <p>
+        Last timestamp:
+        <span id="lastTimestamp">None</span>
+    </p>
+
+    <p>
+        Session ID:
+        <span id="sessionIdDisplay">None</span>
+    </p>
+
+</div>
+
+            <div class="buttons">
+
+    <button id="startButton">
+        Start Recording
+    </button>
+
+    <button id="stopButton" disabled>
+        Stop Recording
+    </button>
+
+    <button id="downloadVideoButton" disabled>
+        Download Recorded Video
+    </button>
+
+    <button id="exportReferenceButton" disabled>
+        Export Reference TXT
+    </button>
+
+</div>
+
+            <p id="status">
+                Status: Ready
+            </p>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

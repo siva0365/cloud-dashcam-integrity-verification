@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dashcam Decoder</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+    <div class="container">
+
+        <!-- =====================================
+             HEADER
+        ====================================== -->
+
+        <header class="page-header">
+
+            <div>
+
+                <h1>Dashcam Decoder</h1>
+
+                <p class="subtitle">
+                    Cloud Fingerprint Integrity Verification
+                </p>
+
+            </div>
+
+            <div class="decoder-badge">
+                DECODER
+            </div>
+
+        </header>
+
+
+        <!-- =====================================
+             SESSION INFORMATION
+        ====================================== -->
+
+        <section class="card">
+
+            <div class="section-title">
+
+                <div>
+
+                    <h2>Verification Input</h2>
+
+                    <p>
+                        Select the driver and recording
+                        session to verify.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="input-grid">
+
+                <div class="input-group">
+
+                    <label for="driverId">
+                        Driver ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="driverId"
+                        placeholder="Enter Driver ID"
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label for="sessionId">
+                        Session ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="sessionId"
+                        placeholder="Enter Session ID"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button id="loadButton">
+
+                Load Cloud Fingerprints
+
+            </button>
+
+        </section>
+
+
+        <!-- =====================================
+             REFERENCE FILE
+        ====================================== -->
+
+        <section class="card">
+
+            <div class="section-title">
+
+                <div>
+
+                    <h2>Reference Fingerprints</h2>
+
+                    <p>
+                        Select the original fingerprint
+                        TXT file used for comparison.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="file-box">
+
+                <input
+                    type="file"
+                    id="txtFile"
+                    accept=".txt"
+                >
+
+                <p id="fileStatus">
+
+                    No reference file selected.
+
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- =====================================
+     ACCIDENT VIDEO
+====================================== -->
+
+<section class="card">
+
+    <div class="section-title">
+
+        <div>
+
+            <h2>Recorded Video</h2>
+
+            <p>
+                Select the recorded dashcam video
+                for video-based verification.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="file-box">
+
+        <input
+            type="file"
+            id="videoFile"
+            accept="video/webm,video/mp4,video/*"
+        >
+
+        <p id="videoStatus">
+            No video selected.
+        </p>
+
+    </div>
+
+
+    <video
+        id="videoPreview"
+        controls
+        playsinline
+        style="
+            width: 100%;
+            max-height: 400px;
+            margin-top: 15px;
+            display: none;
+        "
+    ></video>
+
+    <canvas
+    id="videoFrameCanvas"
+    style="display: none;">
+    </canvas>
+    <div style="margin-top: 15px;">
+
+    <button
+        id="verifyVideoButton"
+        disabled
+    >
+        Verify Video Against Cloud
+    </button>
+
+    <p id="videoVerificationStatus">
+        Load cloud fingerprints and select a video first.
+    </p>
+
+</div>
+
+</section>
+
+        <!-- =====================================
+             VERIFICATION ACTION
+        ====================================== -->
+
+        <section class="card verification-action">
+
+            <div>
+
+                <h2>Integrity Verification</h2>
+
+                <p>
+                    Compare cloud fingerprints with
+                    the reference fingerprints.
+                </p>
+
+            </div>
+
+
+            <button
+                id="verifyButton"
+                disabled
+            >
+
+                Verify Integrity
+
+            </button>
+
+
+            <p
+                id="verificationStatus"
+                class="waiting-status"
+            >
+
+                Waiting for verification...
+
+            </p>
+
+        </section>
+
+
+        <!-- =====================================
+             MAIN VERIFICATION STATUS
+        ====================================== -->
+
+        <section
+            id="verificationBanner"
+            class="verification-banner"
+        >
+
+            <div class="status-icon">
+                ?
+            </div>
+
+            <div>
+
+                <h2 id="bannerTitle">
+                    Verification Not Started
+                </h2>
+
+                <p id="bannerMessage">
+                    Load the cloud fingerprints and
+                    reference file to begin verification.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             SUMMARY
+        ====================================== -->
+
+        <section class="card">
+
+            <div class="section-title">
+
+                <div>
+
+                    <h2>Verification Summary</h2>
+
+                    <p>
+                        Results of the fingerprint comparison.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat-card">
+
+                    <span class="stat-label">
+                        Cloud
+                    </span>
+
+                    <span
+                        id="cloudCount"
+                        class="stat-value"
+                    >
+                        0
+                    </span>
+
+                    <span class="stat-description">
+                        Fingerprints
+                    </span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <span class="stat-label">
+                        Reference
+                    </span>
+
+                    <span
+                        id="referenceCount"
+                        class="stat-value"
+                    >
+                        0
+                    </span>
+
+                    <span class="stat-description">
+                        Fingerprints
+                    </span>
+
+                </div>
+
+
+                <div class="stat-card valid-card">
+
+                    <span class="stat-label">
+                        Valid
+                    </span>
+
+                    <span
+                        id="validCount"
+                        class="stat-value"
+                    >
+                        0
+                    </span>
+
+                    <span class="stat-description">
+                        Matching fingerprints
+                    </span>
+
+                </div>
+
+
+                <div class="stat-card invalid-card">
+
+                    <span class="stat-label">
+                        Modified / Corrupted
+                    </span>
+
+                    <span
+                        id="invalidCount"
+                        class="stat-value"
+                    >
+                        0
+                    </span>
+
+                    <span class="stat-description">
+                        Mismatched fingerprints
+                    </span>
+
+                </div>
+
+
+                <div class="stat-card warning-card">
+
+                    <span class="stat-label">
+                        Missing
+                    </span>
+
+                    <span
+                        id="missingCount"
+                        class="stat-value"
+                    >
+                        0
+                    </span>
+
+                    <span class="stat-description">
+                        Expected but not found
+                    </span>
+
+                </div>
+
+
+                <div class="stat-card warning-card">
+
+                    <span class="stat-label">
+                        Extra
+                    </span>
+
+                    <span
+                        id="extraCount"
+                        class="stat-value"
+                    >
+                        0
+                    </span>
+
+                    <span class="stat-description">
+                        Unexpected fingerprints
+                    </span>
+
+                </div>
+
+
+                <div class="stat-card reliability-card">
+
+                    <span class="stat-label">
+                        Reliability
+                    </span>
+
+                    <span
+                        id="reliability"
+                        class="stat-value"
+                    >
+                        0%
+                    </span>
+
+                    <span class="stat-description">
+                        Valid / Reference
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Existing element kept for JavaScript -->
+
+            <div class="integrity-row">
+
+                <span>
+                    Overall Integrity
+                </span>
+
+                <span
+                    id="integrityStatus"
+                    class="status-badge neutral"
+                >
+                    NOT VERIFIED
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             LOG
+        ====================================== -->
+
+        <section class="card">
+
+            <div class="section-title">
+
+                <div>
+
+                    <h2>Decoder Log</h2>
+
+                    <p>
+                        Verification activity and system messages.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <pre id="logOutput">Decoder ready.</pre>
+
+        </section>
+
+
+        <!-- =====================================
+             AUDIT TABLE
+        ====================================== -->
+
+        <section class="card">
+
+            <div class="section-title">
+
+                <div>
+
+                    <h2>Fingerprint Audit</h2>
+
+                    <p>
+                        Frame-by-frame integrity verification.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Frame</th>
+
+                            <th>Timestamp</th>
+
+                            <th>Cloud Fingerprint</th>
+
+                            <th>Reference Fingerprint</th>
+
+                            <th>Result</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="auditTableBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+    </div>
+
+
+    <!-- Supabase JavaScript library -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+    </script>
+
+
+    <!-- Supabase configuration -->
+
+    <script src="../encoder/config.js"></script>
+
+
+    <!-- Decoder JavaScript -->
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
